@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+    <name>restcrudmanager</name>
+    <displayName>Rest CRUD Manager App</displayName>
+    <description>Rest CRUD Manager App</description>
+    <versionHandler>com.tui.languagesmanager.setup.LanguagesManagerVersionHandler</versionHandler>
+    <version>${project.version}</version>
+
+    <components>
+        <id>app-restcrudmanager</id>
+    </components>
+  
+    <dependencies>
+        <dependency>
+            <name>core</name>
+            <version>5.4/*</version>
+        </dependency>
+        <dependency>
+            <name>ui-admincentral</name>
+            <version>5.4/*</version>
+        </dependency>
+        <dependency>
+            <name>ui-framework</name>
+            <version>5.4/*</version>
+        </dependency>
+        <dependency>
+            <name>ui-contentapp</name>
+            <version>5.4/*</version>
+        </dependency>
+        <dependency>
+            <name>cache</name>
+            <version>5.4/*</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <name>pages</name>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <name>dam</name>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</module>
