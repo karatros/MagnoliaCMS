@@ -10,11 +10,14 @@ import info.magnolia.ui.form.EditorValidator;
 
 import java.net.URISyntaxException;
 
+import javax.jcr.RepositoryException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.restcrudmanager.base.FullRestService;
 import com.restcrudmanager.service.BaseServiceImpl;
+import com.restcrudmanager.utils.Utils;
 import com.vaadin.data.Item;
 
 /**
@@ -51,7 +54,17 @@ public class EditAction<T extends ConfiguredActionDefinition> extends AbstractAc
         this.validator = validator;
         this.uiContext = uiContext;
         this.appContext = appContext;
-        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
+        
+        Class<?> serviceClass;
+		try {
+			serviceClass = Class.forName(Utils.getServiceClassName(appContext));
+			
+			this.service = (FullRestService) serviceClass.newInstance();
+		} catch (ClassNotFoundException | RepositoryException | InstantiationException | IllegalAccessException e) {
+			log.error("Error en AddAction: ",e);
+		}
+		
+//        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
 
     }
 

@@ -10,11 +10,13 @@ import info.magnolia.ui.form.EditorValidator;
 
 import java.net.URISyntaxException;
 
+import javax.jcr.RepositoryException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.restcrudmanager.base.FullRestService;
-import com.restcrudmanager.service.BaseServiceImpl;
+import com.restcrudmanager.utils.Utils;
 import com.vaadin.data.Item;
 
 /**
@@ -23,7 +25,7 @@ import com.vaadin.data.Item;
  * @param <T> definition type.
  * @author isilanes
  */
-public class AddAction<T extends ConfiguredActionDefinition> extends AbstractAction<T> {
+public class AddAction<T extends AddActionDefinition> extends AbstractAction<T> {
 
     private final Item item;
 
@@ -52,7 +54,22 @@ public class AddAction<T extends ConfiguredActionDefinition> extends AbstractAct
         this.uiContext = uiContext;
         this.appContext = appContext;
 
-        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
+        Class<?> serviceClass;
+		try {
+			serviceClass = Class.forName(Utils.getServiceClassName(appContext));
+			
+			this.service = (FullRestService) serviceClass.newInstance();
+		} catch (ClassNotFoundException | RepositoryException | InstantiationException | IllegalAccessException e) {
+			log.error("Error en AddAction: ",e);
+		}
+//        translatorClass.newInstance()
+//        this.service = (FullRestService) serviceClass.newInstance();
+//        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
+        
+//        Class<?> translatorClass = Class.forName(Utils.getTranslatorClassName(app));
+//		Method getMapMethod = translatorClass.getDeclaredMethod("getMap", cArg);
+//		LinkedHashMap<String, Item> partialItemMapList = (LinkedHashMap<String, Item>) getMapMethod.invoke(translatorClass.newInstance(), jsonArray); 
+        
     }
 
     /**

@@ -2,8 +2,6 @@ package com.restcrudmanager.utils;
 
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes.Renderable;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -27,9 +25,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.jackrabbit.JcrConstants;
@@ -40,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import com.restcrudmanager.base.keys.FullRestCRUDManagerKeys;
 import com.restcrudmanager.exception.ConnectionProblemException;
-import com.tui.gotui.utils.Constants;
 
 /**
  * Util methods
@@ -441,6 +435,7 @@ public class Utils {
         			valueOfProperty = FullRestCRUDManagerKeys.DEFAULT_ID;
             	}
         		
+        		
         		mapOfProperties.put(keyOfProperty, valueOfProperty);
         	}
         }
@@ -448,4 +443,102 @@ public class Utils {
         return mapOfProperties;
 
     }
+    
+    /**
+     * Method to retrieve from configuration all the correspondency between JSON fields and ITEM fields
+     * 
+     * @param appContext
+     * @return
+     * @throws RepositoryException
+     */
+    public static Map<String,Object> getItemFieldsFromConfigForCreate(AppContext appContext) throws RepositoryException {
+
+    	Map<String,Object> mapOfProperties = new HashMap<>();
+
+        //Querying to retrieve all fields of the node Fields
+        String queryStr = "SELECT * FROM [" + JcrConstants.NT_BASE + "] as t "
+        				+ " WHERE ISDESCENDANTNODE(t, '" + Utils.getFieldsNodeConfigNodePath(appContext) + "') AND t.[jcr:primaryType] = 'mgnl:contentNode' ";
+        //Get an iterator with all the nodes 
+        NodeIterator nodeIt = QueryUtil.search(FullRestCRUDManagerKeys.CTE_CONFIGWORKSPACE, queryStr);
+        if (nodeIt.hasNext()) {
+        	while(nodeIt.hasNext()){
+        		//Get a node. That node represents a field
+        		Node fieldNode = nodeIt.nextNode();
+        		//Get the name of the node and insert it as key
+        		String keyOfProperty = fieldNode.getName();
+        		String valueOfProperty = "";
+        		if(
+            			(fieldNode.hasProperty("primary")&&
+            			(fieldNode.getProperty("primary").getBoolean()))
+            		){
+        			valueOfProperty = FullRestCRUDManagerKeys.DEFAULT_ID;
+            	}
+        		if(
+        			(fieldNode.hasProperty("allowedInJsonMethod")&&
+            		("".equals(fieldNode.getProperty("allowedInJsonMethod").getString())))
+            	){
+        			valueOfProperty = FullRestCRUDManagerKeys.DEFAULT_ID;
+        		}
+        		
+        		mapOfProperties.put(keyOfProperty, valueOfProperty);
+        	}
+        }
+
+        return mapOfProperties;
+
+    }
+    
+    
+    /**
+     * 
+     * @param appContext
+     * @return
+     * @throws RepositoryException 
+     */
+    public static String getTranslatorClassName(AppContext appContext) throws RepositoryException{
+    	
+    	String valueOfProperty = "";
+    	//Querying to retrieve all fields of the node Fields
+    	String queryStr = "SELECT * FROM [" + JcrConstants.NT_BASE + "] as t "
+				+ " WHERE ISDESCENDANTNODE(t, '" + Utils.getAppPath(appContext) + "') and name(t) = 'serviceConfig'";
+        //Get an iterator with all the nodes 
+        NodeIterator nodeIt = QueryUtil.search(FullRestCRUDManagerKeys.CTE_CONFIGWORKSPACE, queryStr);
+        if (nodeIt.hasNext()) {
+        	while(nodeIt.hasNext()){
+        		//Get a node. That node represents a field
+        		Node fieldNode = nodeIt.nextNode();
+        		if(
+            			(fieldNode.hasProperty("jsonTranslatorClass"))
+            	){
+        			valueOfProperty = fieldNode.getProperty("jsonTranslatorClass").getString();
+            	}
+        	}
+        }
+    	
+    	return valueOfProperty;
+    }
+    
+    public static String getServiceClassName(AppContext appContext) throws RepositoryException{
+    	
+    	String valueOfProperty = "";
+    	//Querying to retrieve all fields of the node Fields
+    	String queryStr = "SELECT * FROM [" + JcrConstants.NT_BASE + "] as t "
+				+ " WHERE ISDESCENDANTNODE(t, '" + Utils.getAppPath(appContext) + "') and name(t) = 'serviceConfig'";
+        //Get an iterator with all the nodes 
+        NodeIterator nodeIt = QueryUtil.search(FullRestCRUDManagerKeys.CTE_CONFIGWORKSPACE, queryStr);
+        if (nodeIt.hasNext()) {
+        	while(nodeIt.hasNext()){
+        		//Get a node. That node represents a field
+        		Node fieldNode = nodeIt.nextNode();
+        		if(
+            			(fieldNode.hasProperty("serviceClass"))
+            	){
+        			valueOfProperty = fieldNode.getProperty("serviceClass").getString();
+            	}
+        	}
+        }
+    	
+    	return valueOfProperty;
+    }
+    
 }

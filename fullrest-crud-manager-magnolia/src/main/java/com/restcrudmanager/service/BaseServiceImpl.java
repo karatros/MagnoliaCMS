@@ -1,7 +1,6 @@
 package com.restcrudmanager.service;
 
 
-import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.app.AppContext;
@@ -13,11 +12,9 @@ import java.net.URL;
 import java.util.Map;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.jackrabbit.JcrConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -226,37 +223,5 @@ public class BaseServiceImpl implements FullRestService {
 		return true;
     	
     }
-    
-//    private String getPrimaryField(AppContext appContext){
-//        
-//    	String id = "";
-//    	//Querying to retrieve all fields of the node Fields
-//        String queryStr = "SELECT * FROM [" + JcrConstants.NT_BASE + "] as t "
-//        				+ " WHERE ISDESCENDANTNODE(t, '" + Utils.getFieldsNodeConfigNodePath(appContext) + "') AND t.[jcr:primaryType] = 'mgnl:contentNode' ";
-//        //Get an iterator with all the nodes 
-//        NodeIterator nodeIt;
-//		try {
-//			nodeIt = QueryUtil.search(FullRestCRUDManagerKeys.CTE_CONFIGWORKSPACE, queryStr);
-//			if (nodeIt.hasNext()) {
-//            	while(nodeIt.hasNext()){
-//            		//Get a node. That node represents a field
-//            		Node fieldNode = nodeIt.nextNode();
-//            		if(
-//            			(fieldNode.hasProperty("primary")&&
-//            			(fieldNode.getProperty("primary").getBoolean()))
-//            		){
-//            				id = fieldNode.getName();
-//            		}
-////            		String nameOfTheField = fieldNode.getName();
-////            		String stringClassOfTheField = fieldNode.getProperty("itemClass").getString();
-////            		Class<?> classOfTheField = Class.forName(stringClassOfTheField);
-////            		properties.put(nameOfTheField, classOfTheField);
-//            	}
-//            }
-//		} catch (RepositoryException e) {
-//			LOGGER.error("BasicItem.getIDs: " + e);
-//		}
-//    	return id;
-//    }
     
 }

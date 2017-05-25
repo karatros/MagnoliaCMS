@@ -5,6 +5,8 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.workbench.container.Refreshable;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -16,17 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.jcr.RepositoryException;
+
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.restcrudmanager.base.FullRestService;
-import com.restcrudmanager.base.JsonTranslator;
 import com.restcrudmanager.base.keys.FullRestCRUDManagerKeys;
 import com.restcrudmanager.item.BasicItem;
-import com.restcrudmanager.jsontranslator.BasicJsonTranslator;
 import com.restcrudmanager.service.BaseServiceImpl;
+import com.restcrudmanager.utils.Utils;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -91,23 +94,36 @@ public class ServiceFlatContainer extends AbstractContainer implements Container
         log.debug("JSONArray value: {}", jsonArray.toString());
         log.debug("JSONArray length: {}", jsonArray.length());
         
-        JsonTranslator jsonTranslator = new BasicJsonTranslator();//TODO cambiar por llamada reflect
+        Class[] cArg = new Class[1];
+        cArg[0] = JSONArray.class;
+        JSONArray[] cArgValues = new JSONArray[1];
+        cArgValues[0] = jsonArray;
         
-        LinkedHashMap<String, Item> partialItemMapList = jsonTranslator.getMap(jsonArray);
+        try {
+        	Class<?> translatorClass = Class.forName(Utils.getTranslatorClassName(app));
+			Method getMapMethod = translatorClass.getDeclaredMethod("getMap", cArg);
+			LinkedHashMap<String, Item> partialItemMapList = (LinkedHashMap<String, Item>) getMapMethod.invoke(translatorClass.newInstance(), jsonArray); 
+		
         
-        Iterator<Entry<String, Item>> itemMapIterator = partialItemMapList.entrySet().iterator();
+	        Iterator<Entry<String, Item>> itemMapIterator = partialItemMapList.entrySet().iterator();
+	        
+	        if(itemMapIterator.hasNext()){
+	        	while(itemMapIterator.hasNext()){
+	        		Entry<String, Item> node = itemMapIterator.next();
+	        		String id = node.getKey();
+	        		if (!ids.contains(id)) {
+	                  ids.add(id);
+	                  log.debug("Adding item to result list {} IDs in {} ms", id, node.getValue().toString());
+	                  itemsMap.put(id, node.getValue());
+	              }
+	        	}
+	        }
         
-        if(itemMapIterator.hasNext()){
-        	while(itemMapIterator.hasNext()){
-        		Entry<String, Item> node = itemMapIterator.next();
-        		String id = node.getKey();
-        		if (!ids.contains(id)) {
-                  ids.add(id);
-                  log.debug("Adding item to result list {} IDs in {} ms", id, node.getValue().toString());
-                  itemsMap.put(id, node.getValue());
-              }
-        	}
-        }
+        } catch (NoSuchMethodException | SecurityException
+				| ClassNotFoundException | IllegalAccessException | IllegalArgumentException 
+				| InvocationTargetException | InstantiationException | RepositoryException e) {
+        	log.error("ERROR in loadAll ", e);
+		} 
         
         //Put duration of the operation into log
         log.debug("TOTALLY loaded {} IDs in {} ms", ids.size(), System.currentTimeMillis() - start);

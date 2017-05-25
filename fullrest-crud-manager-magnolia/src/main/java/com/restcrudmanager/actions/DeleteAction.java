@@ -12,6 +12,7 @@ import info.magnolia.ui.form.EditorCallback;
 import java.net.URISyntaxException;
 
 import javax.inject.Named;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import com.restcrudmanager.base.FullRestService;
 import com.restcrudmanager.base.keys.FullRestCRUDManagerKeys;
 import com.restcrudmanager.item.BasicItem;
 import com.restcrudmanager.service.BaseServiceImpl;
+import com.restcrudmanager.utils.Utils;
 import com.vaadin.data.Item;
 
 /**
@@ -46,7 +48,17 @@ public class DeleteAction<T extends ConfiguredActionDefinition> extends Abstract
         this.item = item;
         this.callback = callback;
         this.eventBus = eventBus;
-        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
+        
+        Class<?> serviceClass;
+		try {
+			serviceClass = Class.forName(Utils.getServiceClassName(appContext));
+			
+			this.service = (FullRestService) serviceClass.newInstance();
+		} catch (ClassNotFoundException | RepositoryException | InstantiationException | IllegalAccessException e) {
+			log.error("Error en AddAction: ",e);
+		}
+        
+//        this.service = new BaseServiceImpl();//TODO Cambiar por llamada reflection
         this.appContext = appContext;
 
     }

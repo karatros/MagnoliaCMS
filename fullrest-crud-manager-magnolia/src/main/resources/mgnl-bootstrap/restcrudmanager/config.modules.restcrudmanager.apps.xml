@@ -170,7 +170,7 @@
               <sv:value>com.restcrudmanager.actions.OpenCreateActionDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="dialogName" sv:type="String">
-              <sv:value>restcrudmanager:add</sv:value>
+              <sv:value>restcrudmanager:addItem</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
               <sv:value>icon-add-item</sv:value>
@@ -191,7 +191,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2017-05-24T01:34:21.039+02:00</sv:value>
+              <sv:value>2017-05-25T02:54:20.597+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -1120,6 +1120,9 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
+      <sv:property sv:name="jsonTranslatorClass" sv:type="String">
+        <sv:value>com.restcrudmanager.jsontranslator.BasicJsonTranslator</sv:value>
+      </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2017-05-23T11:42:19.315+02:00</sv:value>
       </sv:property>
@@ -1127,10 +1130,13 @@
         <sv:value>superuser</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2017-05-23T14:12:35.077+02:00</sv:value>
+        <sv:value>2017-05-25T02:08:37.889+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="serviceClass" sv:type="String">
+        <sv:value>com.restcrudmanager.service.BaseServiceImpl</sv:value>
       </sv:property>
       <sv:property sv:name="urlBase" sv:type="String">
         <sv:value>https://des.gotui.com/api-back-manager/v1.0/entities/language</sv:value>

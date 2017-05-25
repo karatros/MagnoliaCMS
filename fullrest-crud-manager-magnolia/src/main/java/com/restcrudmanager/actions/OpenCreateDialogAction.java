@@ -102,7 +102,8 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateActionDefin
         //Create map of properties
         Map<String, Object> mapOfProperties = new HashMap<>();
 		try {
-			mapOfProperties = Utils.getItemFieldsFromConfig(appContext);
+			mapOfProperties = Utils.getItemFieldsFromConfigForCreate(appContext);
+			
 		} catch (RepositoryException e) {
 			log.error("getItem: " + e);
 		}
